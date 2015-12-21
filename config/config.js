@@ -1,0 +1,23 @@
+var config = {};
+
+// general info
+config.version = 2.0;
+config.name = 'The unofficial Bower registry';
+config.description = 'This is the unofficial Bower registry, home of 45k+ packages.';
+
+// defaults
+config.port = 3000;
+config.defaultSize = 30;
+
+config.thinkHost = 'localhost';
+config.thinkPort = 28015;
+config.thinkAuthKey = '';
+config.thinkDB = 'cookiejar';
+
+// pub/priv registry
+config.isPublic = true;
+config.skipValidation = false;
+
+
+
+module.exports = config;

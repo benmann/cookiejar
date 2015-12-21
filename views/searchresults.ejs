@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>cookiejar filled with Bower packages</title>
+</head>
+<body>
+
+  <h1>cookiejar filled with Bower packages</h1>
+  <h2>fuond <%= packages.length %> packages.</h2>
+
+  <%
+    packages.forEach(function(package, index) {
+  %>
+
+    <div class="package">
+      <a href="<%= package.url %>">
+        <p><%= package.name %></p>
+        <p><%= package.created_at %></p>
+      </a>
+    </div>
+
+  <%
+    });
+  %>
+
+</body>
+</html>

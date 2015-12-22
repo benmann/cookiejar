@@ -6,7 +6,8 @@ Adding elasticsearch to the stack makes search and analytics easier and more rel
 providing an easy to use API, which clients can interact with.
 
 ### Requirements
-rethink DB 2+
+rethink DB 2.2.2
+logstash 2.1.1
 elasticsearch 2.1.0
 
 

@@ -6,9 +6,9 @@ Adding elasticsearch to the stack makes search and analytics easier and more rel
 providing an easy to use API, which clients can interact with.
 
 ### Requirements
-rethink DB 2.2.2
-logstash 2.1.1
-elasticsearch 2.1.0
+rethink DB 2.2.2   
+logstash 2.1.1   
+elasticsearch 2.1.0   
 
 
 ### Installation
@@ -17,11 +17,11 @@ The route `/init` will populate your database with the included dataset in `/dat
 
 ### Functions
 `getAllPackages()`
-returns 50k packages, which are currently all packages available.
+returns 50k packages, which are currently all packages available.   
 `searchForPackages()`
-gets a list of packages that loosely match the entered name
+gets a list of packages that loosely match the entered name   
 `getPackageByName()`
-returns a single package that fits the query exactly (or none)
+returns a single package that fits the query exactly (or none)   
 `getPackageByID()`
 rather for internal use, fetches a single package by _id
 

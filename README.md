@@ -1,7 +1,7 @@
 # 🍪 cookiejar
 Unofficial Bower registry with rethinkDB and elasticsearch
 
-cookiejar rebuilds the Bower registry by using rethink DB as main database and automatic replication to elasticsearch. Only relevant data is indexed and queries are only hydrated if needed.
+cookiejar rebuilds the Bower registry by using RethinkDB as main database and automatic replication to elasticsearch. Only relevant data is indexed and all actions on Rethink are mirrored to elastic via logstash.
 Adding elasticsearch to the stack makes search and analytics easier and more reliable. Cookiejar is built modular and allows different workers to provide the actual data, while
 providing an easy to use API, which clients can interact with.
 
@@ -10,9 +10,16 @@ rethink DB 2.2.2
 logstash 2.1.1   
 elasticsearch 2.1.0   
 
+### Using cookiejar
+- run RethinkDB
+- run elasticsearch
+- run logstash (with included config)
+- run /init to populate the DB
+- use [cookiemonster](https://github.com/BenMann/cookiemonster) to query the database
+- enjoy cookies 🍪
 
-### Installation
-The route `/init` will populate your database with the included dataset in `/data`. You can always populate with newer data by fetching `$ curl http://bower.herokuapp.com/packages
+### Populating
+The route `/init` will populate your databases with the included dataset in `/data`. You can always populate with newer data by fetching `$ curl http://bower.herokuapp.com/packages
 ` and using that JSON.
 
 ### Functions

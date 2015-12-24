@@ -1,7 +1,6 @@
 var express = require('express'),
     router = express.Router(),
-    initRegistry = require('../workers/initRegistry'),
-    generalWorker = require('../workers/general-worker'),
+    registry = require('../workers/registry-worker'),
     elastic = require('../api/elasticsearch'),
     config = require('../config/config'),
     BowerData = require('../data/15-12-19-BowerPackages.json');
@@ -11,7 +10,7 @@ var express = require('express'),
 * GET general registry info
 * =========================================== */
 router.get('/', function(req, res, next) {
-  generalWorker.getRegistryInfo(function(err, result){
+  registry.getRegistryInfo(function(err, result){
     if(err){
       console.log(err);
     }
@@ -28,7 +27,7 @@ router.get('/', function(req, res, next) {
 * will provide the data, this is just to get some data.
 * =========================================== */
 router.get('/init', function(req, res, next) {
-  initRegistry.init(BowerData, function(err, result){
+  registry.init(BowerData, function(err, result){
     if(err){
       console.log(err);
     }

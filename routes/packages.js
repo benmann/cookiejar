@@ -7,8 +7,8 @@ var express = require('express'),
 
 // SWITCH APIs: rethinkDB or elasticsearch.
 // Each API could expose the exactly same functions for the diff DBs :)
-// rethink is only stuubed right now.
-var api  = rethink;
+// TODO: however we need a river.. GET/POST/DELETE > rethink > elastic
+var api  = elastic;
 
 
 router.get('/', function(req, res, next) {

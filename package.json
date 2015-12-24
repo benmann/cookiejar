@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.14.1",
+    "elasticsearch": "^10.0.1",
     "express": "^4.13.3",
     "rethinkdb": "^2.2.1",
     "shortid": "^2.2.4",

@@ -7,7 +7,7 @@ var config = require('./config/config.js'),
     packages = require('./routes/packages');
 
 var app = express();
-app.enable('strict routing');
+// app.enable('strict routing');
 app.use(cors);
 app.use('/', index);
 app.use('/packages', packages);

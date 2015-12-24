@@ -1,15 +1,18 @@
 var config = require('../config/config'),
-    Package = require('../models/package').Package,
+    Package = require('../models/package.js'),
+    elastic = require('../config/elasticClient'),
     isValidURL = require('../helper/validURL'),
     isValidName = require('../helper/validName');
+
+
 
 /* =============================================
 * GET count all packages
 * =========================================== */
 exports.countAllPackages = function(callback) {
-  // goes right to mongo, needs caching
-  Package.count({}, function(err, count){
-    callback(null, {"amount": count});
+  // currently using rethink for counts
+  Package.count().execute().then(function(total) {
+    callback(null, total);
   });
 };
 
@@ -17,18 +20,21 @@ exports.countAllPackages = function(callback) {
 * GET all packages
 * =========================================== */
 exports.getAllPackages = function(callback) {
-  var getAllPackages = {
-    "query" : {
-      "match_all" : {}
+  elastic.search({
+    index: 'packages',
+    type: 'pkg',
+    size: 1000,
+    body: {
+      query: {
+        "match_all" : {}
+      }
     }
-  };
+  }).then(function(searchresult) {
+    console.log(searchresult.hits.hits);
+    callback(null, searchresult.hits.hits);
+  }, function(error) {
+    console.trace(error.message);
 
-  Package.search(getAllPackages, {size: 50000, hydrate:true, hydrateOptions: {lean: false}}, function(err, searchresult) {
-    if(err){
-      console.log(err);
-    } else {
-      callback(null, searchresult.hits.hits);
-    }
   });
 };
 
@@ -36,18 +42,22 @@ exports.getAllPackages = function(callback) {
 * GET package by name
 * =========================================== */
 exports.getPackageByName = function(name, callback) {
-  var getPackageByName = {
-     "term" : {
-        "name" : name
+  elastic.search({
+    index: 'packages',
+    type: 'pkg',
+    body: {
+      query: {
+        "term" : {
+          "name" : name
+        }
+      }
     }
-  };
+  }).then(function(searchresult) {
+    console.log(searchresult.hits.hits);
+    callback(null, searchresult.hits.hits);
+  }, function(error) {
+    console.trace(error.message);
 
-  Package.search(getPackageByName, {size: 1, hydrate:true, hydrateOptions: {lean: false}}, function(err, searchresult) {
-    if(err){
-      console.log(err);
-    } else {
-      callback(null, searchresult.hits.hits);
-    }
   });
 };
 
@@ -56,21 +66,23 @@ exports.getPackageByName = function(name, callback) {
 * GET package by ID
 * =========================================== */
 exports.getPackageByID = function(id, callback) {
-  var getPackageByID = {
-    "bool": {
-      "must":
-      {
-        "match": {"_id": id}
+  elastic.search({
+    index: 'packages',
+    body: {
+      query: {
+        "bool": {
+          "must":
+          {
+            "match": {"_id": id}
+          }
+        }
       }
     }
-  };
-
-  Package.search(getPackageByID, {size: config.defaultSize, hydrate:true, hydrateOptions: {lean: false}}, function(err, searchresult) {
-    if(err){
-      console.log(err);
-    } else {
+  }).then(function(searchresult) {
+      console.log(searchresult.hits.hits);
       callback(null, searchresult.hits.hits);
-    }
+    }, function(error) {
+      console.trace(error.message);
   });
 };
 
@@ -78,62 +90,33 @@ exports.getPackageByID = function(id, callback) {
 /* =============================================
 * GET search for packages
 * =========================================== */
-exports.searchForPackages = function(query, callback) {
+exports.searchForPackages = function(searchquery, callback) {
+  elastic.search({
+      index: 'packages',
+      size: config.defaultSize,
+      body: {
+        query: {
+          "multi_match" : {
+            "query": searchquery,
+            "type": "best_fields",
+            "fields": ["new_val.name", "new_val.description", "new_val.keywords", "new_val.owner"],
+            "minimum_should_match": "25%",
+            "fuzziness" : 2,
+          }
+        }
+      }
+    }).then(function(res) {
+      // This is what we get as actual JSON:
+      // res.hits.hits[0]._source.new_val
 
-  var searchSpecific = {
-    "multi_match" : {
-      "query": query,
-      "type": "best_fields",
-      "fields": ["name", "description", "keywords", "owner"],
-      "minimum_should_match": "25%",
-      "fuzziness" : 2,
-    }
-  };
+      var packages = [];
+      res.hits.hits.forEach(function(package, index) {
+        packages.push(package._source.new_val);
+      });
 
-  Package.search(searchSpecific, {size: config.defaultSize, hydrate:true, hydrateOptions: {lean: false}}, function(err, searchresult) {
-    if(err){
-      console.log(err);
-    } else {
-      callback(null, searchresult.hits.hits);
-    }
+      callback(null, packages);
+    }, function(error) {
+      console.trace(error.message);
   });
 };
 
-
-/* =============================================
-* POST create new package
-*
-* 200 - all good, pkg created
-* 400 - invalid name / url / connection error
-* 403 - already registered
-*
-* =========================================== */
-exports.createPackage = function(request, callback) {
-  var name = request.body.name,
-      url = normalizeURL(request.body.url),
-      validName = isValidName(name),
-      validURL = isValidURL(url);
-
-  if (validName.error) {
-    // return status 400
-    console.log("Package name is not valid");
-  }
-
-  if (validURL.error) {
-    // return status 400
-    console.log("Package name is not valid");
-  }
-
-  // all good, return 200 and add pkg
-  var newPackage = new Package({
-        name: name,
-        url: url
-      });
-
-   newPackage.save(function(err) {
-      if (err) {
-        return callback(err);
-      }
-      callback();
-    });
-};

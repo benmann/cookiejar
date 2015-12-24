@@ -8,6 +8,7 @@ var config = require('../config/config.js'),
 var Package = thinky.createModel("Package", {
   id:           type.string().default(shortid.generate),
   name:         type.string(),
+  type:         type.string().default("package"),
   owner:        type.string(),
   description:  type.string(),
   keywords:     [type.string()],

@@ -1,12 +1,14 @@
 var config = require('../config/config');
 
-module.exports = function(name) {
-  // regex to validate packages names according to the spec - https://github.com/bower/bower.json-spec#name
-  //
-  // - Lowercase, a-z, can contain digits, 0-9, can contain dash or dot but not start/end with them.
-  // - Consecutive dashes or dots not allowed.
-  // - 50 characters or less.
+/*
+  *  regex to validate packages names according to the spec - https://github.com/bower/bower.json-spec#name
+  *
+  *  - Lowercase, a-z, can contain digits, 0-9, can contain dash or dot but not start/end with them.
+  *  - Consecutive dashes or dots not allowed.
+  *  - 50 characters or less.
+  */
 
+module.exports = function(name) {
   var isValid = true,
       errors = [],
       length;
@@ -29,11 +31,9 @@ module.exports = function(name) {
   length = errors.length;
 
   if (length) {
-
     if (length > 1) {
       errors[length - 1] = 'and must ' + errors[length - 1];
     }
-
     isValid = {
       error: 'Package names must ' + errors.join(', ') + '.'
     };

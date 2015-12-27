@@ -8,7 +8,7 @@ var express = require('express'),
 // SWITCH APIs: rethinkDB or elasticsearch.
 // Each API could expose the exactly same functions for the diff DBs :)
 // TODO: however we need a river.. GET/POST/DELETE > rethink > elastic
-var api  = elastic;
+var api  = rethink;
 
 
 router.get('/', function(req, res, next) {
@@ -58,6 +58,23 @@ router.get('/list', function(req, res) {
 
 /* =============================================
 * GET Package by name
+* api.getAllPackages()
+* =========================================== */
+router.get('/id/:id', function(req, res) {
+  api.getPackageByID(req.params.id, function(err, result){
+    if(err){
+      console.log(err);
+    }
+    console.log(result);
+    res.setHeader('Content-Type', 'application/json');
+    res.status(200).json(result);
+  });
+});
+
+
+
+/* =============================================
+* GET Package by name
 * api.getPackageByName()
 * =========================================== */
 router.get('/:name', function(req, res) {
@@ -76,7 +93,7 @@ router.get('/:name', function(req, res) {
 * api.searchForPackages()
 * =========================================== */
 router.get('/search/:query', function(req, res) {
-  api.searchForPackages(req.params.query, function(err, result){
+  elastic.searchForPackages(req.params.query, function(err, result){
     if(err){
       console.log(err);
     }
@@ -90,12 +107,13 @@ router.get('/search/:query', function(req, res) {
 * POST create package
 * =========================================== */
 router.post('/', function(req, res) {
-  api.createPackage(req, function(err, result){
+  api.createPackage(req, function(err, statusCode, result){
     if(err){
       console.log(err);
     }
+    console.log("result: "+result);
     res.setHeader('Content-Type', 'application/json');
-    res.status(200).json(result);
+    res.status(statusCode).json(result);
   });
 });
 

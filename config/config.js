@@ -17,6 +17,7 @@ config.thinkDB = 'cookiejar';
 // pub/priv registry
 config.isPublic = true;
 config.skipValidation = false;
+config.skipNormalization = false;
 
 
 

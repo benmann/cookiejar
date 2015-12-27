@@ -8,12 +8,9 @@ module.exports = function(url, callback) {
     return;
   }
 
-  var git = spawn('git', ['ls-remote',  url], {
-        stdio: 'ignore'
-      });
-
+  var git = spawn('git', ['ls-remote',  url], {stdio: 'ignore'});
   git.on('close', function(exitCode) {
-      callback(exitCode === 0);
+    callback(exitCode === 0);
   });
 
 };

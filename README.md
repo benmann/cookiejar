@@ -1,3 +1,5 @@
+[![bitHound Overall Score](https://www.bithound.io/github/BenMann/cookiejar/badges/score.svg)](https://www.bithound.io/github/BenMann/cookiejar)   
+
 # 🍪 cookiejar
 Unofficial Bower registry with rethinkDB and elasticsearch
 
@@ -33,4 +35,5 @@ returns a single package that fits the query exactly (or none)
 rather for internal use, fetches a single package by _id   
 `createPackage()` Creates package after checking validity (URL/name)   
 ==> All created packages are autmomatically replicated into elasticsearch.
-
+   
+You'd like to contribute? [Here's a good start!](https://www.bithound.io/github/BenMann/cookiejar/master/techdebt)

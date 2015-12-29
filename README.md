@@ -1,5 +1,5 @@
 # 🍪 cookiejar
-> Unofficial Bower registry with rethinkDB and elasticsearch   
+> Unofficial Bower registry with RethinkDB and elasticsearch   
 
 [![bitHound Overall Score](https://www.bithound.io/github/BenMann/cookiejar/badges/score.svg)](https://www.bithound.io/github/BenMann/cookiejar)   
 

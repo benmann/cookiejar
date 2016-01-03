@@ -65,4 +65,4 @@ model.get(["packageById", "4J_wSnMIbr8x", "url"]).then(function(response) {
 :soon: `removePackage()`  Removes a package from the registry based on ID or name
    
 --
-[Here's a good start!](https://www.bithound.io/github/BenMann/cookiejar/master/techdebt) if you'd like to contribute!
+[Here's a good start](https://www.bithound.io/github/BenMann/cookiejar/master/techdebt) if you'd like to contribute!

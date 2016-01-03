@@ -24,16 +24,45 @@ elasticsearch 2.1.0
 The route `/init` will populate your databases with the included dataset in `/data`. You can always populate with newer data by fetching `$ curl http://bower.herokuapp.com/packages
 ` and using that JSON.
 
-### Functions
-`getAllPackages()`
-returns 50k packages, which are currently all packages available.   
-`searchForPackages()`
-gets a list of packages that loosely match the entered name   
-`getPackageByName()`
-returns a single package that fits the query exactly (or none)   
-`getPackageByID()`
-rather for internal use, fetches a single package by _id   
-`createPackage()` Creates package after checking validity (URL/name)   
-==> All created packages are autmomatically replicated into elasticsearch.
+### Querying the registry :mag_right: 
+Cookiejar uses Netflix' [Falcor](https://github.com/Netflix/falcor) to hide different routes behind one single endpoint. Every request to the database is then internally routed by Falcor and returns an on-the-fly generated JSON Graph.
+
+To communicate with the registry, you can use the following queries:   
+
+:o: `registryInfo`  
+```
+model.get("registryInfo").then(function(response) {
+  document.write(response.json.registryInfo.version);
+});
+```
+
+:o: `packages.length`   
+```
+model.get("packages.length").then(function(response) {
+  document.write(response.json.packages.length);
+});
+```
+
+:o: `packagesByName`  
+```
+model.get("packagesByName.bower").then(function(response) {
+  var res = response.json.packagesByName.bower;
+  for (pack in res) {
+    document.write(res[pack].name+" - "+res[pack].url+"<br>");
+  }       
+});
+```
+
+:o: `packageById`   
+```
+model.get(["packageById", "4J_wSnMIbr8x", "url"]).then(function(response) {
+  document.write(response.json.packageById["4J_wSnMIbr8x"].url);
+});
+```
+
+
+:soon: `createPackage()` Creates package after checking validity (URL/name)   
+:soon: `removePackage()`  Removes a package from the registry based on ID or name
    
-You'd like to contribute? [Here's a good start!](https://www.bithound.io/github/BenMann/cookiejar/master/techdebt)
+--
+[Here's a good start!](https://www.bithound.io/github/BenMann/cookiejar/master/techdebt) if you'd like to contribute!

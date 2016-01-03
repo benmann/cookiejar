@@ -9,7 +9,7 @@ providing an easy to use API, which clients can interact with.
 
 ### Requirements
 rethink DB 2.2.2   
-logstash 2.1.1   
+logstash 2.1.1 + [input plugin](https://github.com/rethinkdb/logstash-input-rethinkdb)
 elasticsearch 2.1.0   
 
 ### Using cookiejar

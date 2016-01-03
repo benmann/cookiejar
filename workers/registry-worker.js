@@ -22,8 +22,9 @@ exports.getRegistryInfo = function(callback) {
 exports.init = function(packages, callback) {
   // reset index
   elastic.deleteIndex();
+  // elastic.initIndex().then(elastic.initMapping)
 
-
+  // basically skipLogstash() ...
   // elastic.deleteIndex().then(
     // cerate index and mapping
     // elastic.initIndex().then(elastic.initMapping).then(

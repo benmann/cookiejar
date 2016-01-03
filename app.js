@@ -1,18 +1,21 @@
 var express = require('express'),
-    path = require('path')
-    bodyParser = require('body-parser');
+    path = require('path'),
+    falcorExpress = require('falcor-express'),
+    Router = require('falcor-router'),
+    bodyParser = require('body-parser'),
+    q = require("q");
 
 var config = require('./config/config.js'),
     cors = require('./config/cors.js'),
-    index = require('./routes/index'),
-    packages = require('./routes/packages');
+    router = require('./router'),
+    app = express();
 
-var app = express();
-// app.enable('strict routing');
 app.use(cors);
-app.use(bodyParser.json());
-app.use('/', index);
-app.use('/packages', packages);
+app.use(express.static(__dirname + '/'));
+app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
+  return new router();
+}));
+
 
 app.listen(config.port);
 console.log(

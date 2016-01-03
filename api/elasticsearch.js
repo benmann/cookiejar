@@ -6,117 +6,90 @@ var config = require('../config/config'),
 
 
 
+
 /* =============================================
-* GET count all packages
+* Return basic registry info
 * =========================================== */
-exports.countAllPackages = function(callback) {
-  // currently using rethink for counts
-  Package.count().execute().then(function(total) {
-    callback(null, total);
-  });
+function getRegistryInfo(){
+  var registryInfo = {
+    name: config.name,
+    version: config.version
+  };
+  return registryInfo;
 };
 
-/* =============================================
-* GET all packages
-* =========================================== */
-exports.getAllPackages = function(callback) {
-  elastic.search({
-    index: 'packages',
-    type: 'pkg',
-    size: 1000,
-    body: {
-      query: {
-        "match_all" : {}
-      }
-    }
-  }).then(function(searchresult) {
-    console.log(searchresult.hits.hits);
-    callback(null, searchresult.hits.hits);
-  }, function(error) {
-    console.trace(error.message);
-
-  });
-};
 
 /* =============================================
-* GET package by name
+* GET search for packages by name
+*
+* @param {string} packName
+* @returns {object} model (contains multiple packages)
 * =========================================== */
-exports.getPackageByName = function(name, callback) {
-  elastic.search({
-    index: 'packages',
-    type: 'pkg',
+function getPackagesByName(packName) {
+  return elastic.search({
+    index: "packages",
+    type: "package",
+    size: config.defaultSize,
     body: {
       query: {
-        "term" : {
-          "name" : name
+        "multi_match" : {
+          "query": packName,
+          "type": "best_fields",
+          "fields": ["new_val.name", "new_val.description", "new_val.keywords", "new_val.owner"],
+          "minimum_should_match": "25%",
+          "fuzziness" : 2,
         }
       }
     }
   }).then(function(searchresult) {
-    console.log(searchresult.hits.hits);
-    callback(null, searchresult.hits.hits);
-  }, function(error) {
-    console.trace(error.message);
 
+    var model = {packagesByName:{}};
+    searchresult.hits.hits.forEach(function(package, index) {
+      var pkgName = package._source.new_val.name,
+          pkgVals = package._source.new_val;
+      model.packagesByName[pkgName] = pkgVals;
+    });
+
+    return model;
   });
 };
 
 
 /* =============================================
-* GET package by ID
+* GET search for packages by ID
+*
+* @param {string} packID
+* @returns {object} model (contains single package)
 * =========================================== */
-exports.getPackageByID = function(id, callback) {
-  elastic.search({
+function getPackageById(packID) {
+
+  return elastic.search({
     index: 'packages',
+    size: 1,
     body: {
       query: {
         "bool": {
           "must":
           {
-            "match": {"_id": id}
+            "match": {"new_val.id": packID}
           }
         }
       }
     }
   }).then(function(searchresult) {
-      console.log(searchresult.hits.hits);
-      callback(null, searchresult.hits.hits);
-    }, function(error) {
-      console.trace(error.message);
+
+    var model = {packageById:{}};
+    var matchingID = searchresult.hits.hits[0]._source.new_val.id,
+        pkgVals = searchresult.hits.hits[0]._source.new_val;
+      
+    model.packageById[matchingID] = pkgVals;   
+    return model;
   });
 };
 
 
-/* =============================================
-* GET search for packages
-* =========================================== */
-exports.searchForPackages = function(searchquery, callback) {
-  elastic.search({
-      index: 'packages',
-      size: config.defaultSize,
-      body: {
-        query: {
-          "multi_match" : {
-            "query": searchquery,
-            "type": "best_fields",
-            "fields": ["new_val.name", "new_val.description", "new_val.keywords", "new_val.owner"],
-            "minimum_should_match": "25%",
-            "fuzziness" : 2,
-          }
-        }
-      }
-    }).then(function(res) {
-      // This is what we get as actual JSON:
-      // res.hits.hits[0]._source.new_val
-
-      var packages = [];
-      res.hits.hits.forEach(function(package, index) {
-        packages.push(package._source.new_val);
-      });
-
-      callback(null, packages);
-    }, function(error) {
-      console.trace(error.message);
-  });
+module.exports = {
+  getRegistryInfo: getRegistryInfo,  
+  getPackagesByName: getPackagesByName,
+  getPackageById: getPackageById
 };
-

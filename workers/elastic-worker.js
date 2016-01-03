@@ -13,7 +13,7 @@ var indexName = "packages";
 exports.initMapping = function() {
   return elasticClient.indices.putMapping({
       index: indexName,
-      type: "pkg",
+      type: "package",
       body: {
         properties: {
           id:           {type: "string", "default": shortid.generate},
@@ -71,7 +71,7 @@ exports.indexExists = function() {
 exports.addDocument = function(document) {
   return elasticClient.index({
       index: indexName,
-      type: "pkg",
+      type: "package",
       body: {
         id: shortid.generate,
         name: document.name,

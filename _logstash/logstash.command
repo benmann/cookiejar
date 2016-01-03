@@ -12,8 +12,7 @@ output {
     hosts => ["localhost:9200"]
     index => "packages"
     document_type => "package"
-    template_name => "packages"
-    template => "~/logstash/logstash.conf"
+    template => "./logstash.conf"
     template_overwrite => true
   }
   stdout { codec => json_lines }

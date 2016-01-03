@@ -4,51 +4,7 @@ var config = require('../config/config'),
     isValidURL = require('../helper/validURL'),
     isValidName = require('../helper/validName');
 
-
-/* =============================================
-* GET count all packages
-* =========================================== */
-exports.countAllPackages = function (callback) {
-  Package.count().execute().then(function(total) {
-    callback(null, total);
-  });
-};
-
-/* =============================================
-* GET all packages
-* =========================================== */
-exports.getAllPackages = function(callback) {
-  Package.orderBy('name').execute().then(function(allPackages) {
-    callback(null, allPackages);
-  }).error(handleError("failed to retrieve all packages."));
-};
-
-/* =============================================
-* GET package by name
-* =========================================== */
-exports.getPackageByName = function(name, callback) {
-  Package.get(name).run().then(function(pkg) {
-    callback(null, pkg);
-  }).error(handleError("failed to get package: "+name));
-};
-
-
-/* =============================================
-* GET package by ID
-* =========================================== */
-exports.getPackageByID = function(id, callback) {
-  Package.filter({"id": id}).run().then(function(pkg) {
-    callback(null, pkg);
-  }).error(handleError("failed to get package with id: "+id));
-};
-
-
-/* =============================================
-* GET search for packages
-* =========================================== */
-// not exposing this in RethinkDB yet, as it wouldn't
-// really match elasticsearch's fulltext search (multi_match)
-
+// TODO: rewrite to use with falcor
 
 /* =============================================
 * POST create new package
@@ -69,23 +25,44 @@ exports.createPackage = function(req, callback) {
   }
 
   isValidURL(url, function(isValid) {
-    console.log("url: "+url);
-        if (isValid) {
+    if (isValid) {
+      var newPackage = new Package({
+        name: name,
+        url: url
+      });
 
-          var newPackage = new Package({
-            name: name,
-            url: url
-          });
-
-          newPackage.save().then(function(doc) {
-            callback(null, 200, "Package "+newPackage.name+" saved...");
-          }).error(handleError("Database error. Couldn't create package."));
-        } else {
-          callback(null, 400, "URL is not valid. Package not created!");
-        }
-    });
+      newPackage.save().then(function(doc) {
+        callback(null, 200, "Package "+newPackage.name+" saved...");
+      }).error(handleError("Database error. Couldn't create package."));
+    } else {
+      callback(null, 400, "URL is not valid. Package not created!");
+    }
+  });
 };
 
+
+
+/* =============================================
+* DELETE remove existing package
+*
+* 200 - all good, pkg deleted
+* 400 - package not found / connection error
+*
+* =========================================== */
+exports.removePackage = function(req, callback) {
+  var name = req.body.name;
+
+  Package.get(name).run().then(function(pkg) {
+    if(!pkg){
+      // return 400
+      console.log("Package not found in registry.");
+      callback(null, 400, "Package not found in registry.");
+    }
+    pkg.delete().then(function(result) {
+      callback(null, 200, "Package "+name+" successfully removed...");
+    });
+  }).error(handleError("failed to delete package: "+name));
+};
 
 
 

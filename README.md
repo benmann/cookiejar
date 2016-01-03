@@ -25,9 +25,11 @@ The route `/init` will populate your databases with the included dataset in `/da
 ` and using that JSON.
 
 ### Querying the registry :mag_right: 
-Cookiejar uses Netflix' [Falcor](https://github.com/Netflix/falcor) to hide different routes behind one single endpoint. Every request to the database is then internally routed by Falcor and returns an on-the-fly generated JSON Graph.
+Cookiejar uses Netflix' [Falcor](https://github.com/Netflix/falcor) to hide different routes behind one single endpoint. Every request to the database is then internally routed by Falcor and returns an on-the-fly generated JSON Graph. This means all client-side communication goes through one route like this:  
 
-To communicate with the registry, you can use the following queries:   
+`var model = new falcor.Model({source: new falcor.HttpDataSource('http://registry.com/model.json') });`   
+
+To communicate with the registry, you can use the following functions, provided by the endpoint:   
 
 :o: `registryInfo`  
 ```

@@ -3,6 +3,7 @@ var Falcor = require("falcor-express"),
     config = require("../config/config"),
     Package = require("../models/package.js"),
     elastic = require("../api/elasticsearch"),
+    rethink = require("../api/rethinkDB"),
     isValidURL = require("../helper/validURL"),
     isValidName = require("../helper/validName");
 
@@ -49,7 +50,24 @@ var router = Router.createClass([
       var packID = req.id[0];
       return elastic.getPackageById(packID).then(function(model){
         return {path:["packageById", packID], value: $atom(model.packageById[packID])};
-      });      
+      });
+    }
+  },
+  {
+    // Create package
+    route: "createPackage[{keys:name}][{keys:url}]",
+    get: function(req) {
+
+      console.log("routing");
+      var packName = req.name[0]
+          packURL = req.url[0];
+
+      console.log(packName +" / "+packURL);
+      
+      rethink.createPackage(packName, packURL).then(function(returnMsg){
+        return {path:["createPackage", packName, packURL], value: returnMsg};
+      });
+
     }
   }
 ]);

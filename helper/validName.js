@@ -38,6 +38,6 @@ module.exports = function(name) {
       error: 'Package names must ' + errors.join(', ') + '.'
     };
   }
-
+  
   return isValid;
 };

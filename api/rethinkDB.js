@@ -14,28 +14,34 @@ var config = require('../config/config'),
 * 403 - already registered
 *
 * =========================================== */
-exports.createPackage = function(req, callback) {
+function createPackage(packName, packURL) {
 
-  var name = req.body.name,
-      url = normalizeURL(req.body.url),
+  var name = packName,
+      url = normalizeURL(packURL),
       validName = isValidName(name);
 
   if (validName.error) {
-    return callback(null, 400, "Package name contains illegal characters. Package not created!");
+    return "Package name contains illegal characters. Package not created!";
   }
 
   isValidURL(url, function(isValid) {
+    console.log("isValid: "+isValid);
     if (isValid) {
       var newPackage = new Package({
         name: name,
         url: url
       });
 
+      console.log("isValid");
+
       newPackage.save().then(function(doc) {
-        callback(null, 200, "Package "+newPackage.name+" saved...");
-      }).error(handleError("Database error. Couldn't create package."));
+        // 200
+        return "Package "+name+" created.";
+      });
     } else {
-      callback(null, 400, "URL is not valid. Package not created!");
+      // 400
+      console.log("isValid NOT");
+      return "Package "+name+" could not be created.";
     }
   });
 };
@@ -49,7 +55,7 @@ exports.createPackage = function(req, callback) {
 * 400 - package not found / connection error
 *
 * =========================================== */
-exports.removePackage = function(req, callback) {
+function removePackage(req) {
   var name = req.body.name;
 
   Package.get(name).run().then(function(pkg) {
@@ -61,13 +67,12 @@ exports.removePackage = function(req, callback) {
     pkg.delete().then(function(result) {
       callback(null, 200, "Package "+name+" successfully removed...");
     });
-  }).error(handleError("failed to delete package: "+name));
+  });
 };
 
 
 
-
-
-function handleError(err) {
-  console.log(err);
-}
+module.exports = {
+  createPackage: createPackage,
+  removePackage: removePackage
+};

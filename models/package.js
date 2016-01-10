@@ -17,6 +17,8 @@ var Package = thinky.createModel("Package", {
   hits:         type.number(),
   stars:        type.number(),
   isPublic:     type.boolean().default(config.isPublic)
+}, {
+  pk: "name" // set primary key
 });
 
 Package.ensureIndex("name");

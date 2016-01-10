@@ -10,7 +10,6 @@ module.exports = function(url, callback) {
 
   var git = spawn('git', ['ls-remote',  url], {stdio: 'ignore'});
   git.on('close', function(exitCode) {
-    console.log(exitCode);
     callback(exitCode === 0);
   });
 

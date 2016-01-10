@@ -1,6 +1,6 @@
 <html>
   <head>
-    <script src="//netflix.github.io/falcor/build/falcor.browser.js"></script>
+    <script src="falcor.browser.js"></script>
     <script>
       var model = new falcor.Model({source: new falcor.HttpDataSource('/model.json') });
 
@@ -11,7 +11,7 @@
       //   var res = response.json.packagesByName.bower;
       //   for (pack in res) {
       //     document.write(res[pack].name+" - "+res[pack].url+"<br>");
-      //   }       
+      //   }
       // });
 
       
@@ -31,11 +31,11 @@
       // model.get("packages.length").then(function(response) {
       //   document.write(response.json.packages.length);
       // });
-
+  
   
       // Create new package, providing name and url
-      model.get(["createPackage", "test", "http://test.com"]).then(function(response){
-        document.write(response.json.createPackage.test["http://test.com"]);
+      model.get(["createPackage", "bower", "git://github.com/BenMann/testrepo"]).then(function(response){
+        document.write(response.json.createPackage.bower["git://github.com/BenMann/testrepo"]);
       });
 
     </script>

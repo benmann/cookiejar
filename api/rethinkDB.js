@@ -1,10 +1,12 @@
 var config = require('../config/config'),
-    Package = require('../models/package.js'),
+    Package = require('../models/package.js'),    
     normalizeURL = require('../helper/normalizeURL');
     isValidURL = require('../helper/validURL'),
     isValidName = require('../helper/validName');
 
-// TODO: rewrite to use with falcor
+var thinky = require('thinky')(),
+    Errors = thinky.Errors;
+
 
 /* =============================================
 * POST create new package
@@ -25,23 +27,22 @@ function createPackage(packName, packURL) {
   }
 
   isValidURL(url, function(isValid) {
-    console.log("isValid: "+isValid);
     if (isValid) {
       var newPackage = new Package({
         name: name,
         url: url
       });
 
-      console.log("isValid");
-
+      //TODO: check if duplicate or handle in error
       newPackage.save().then(function(doc) {
-        // 200
-        return "Package "+name+" created.";
+        console.log(doc);
+        var packagesByName = {packName:{"url": packURL}};
+        return packagesByName;
       });
-    } else {
-      // 400
-      console.log("isValid NOT");
-      return "Package "+name+" could not be created.";
+
+    } else {      
+        var errorMsg = { $type: "error", value: "Could not create package!"};
+        return errorMsg;
     }
   });
 };
@@ -56,23 +57,33 @@ function createPackage(packName, packURL) {
 *
 * =========================================== */
 function removePackage(req) {
-  var name = req.body.name;
+  // var name = req.body.name;
 
+  // Package.get(name).run().then(function(pkg) {
+  //   if(!pkg){
+  //     // return 400
+  //     console.log("Package not found in registry.");
+  //     callback(null, 400, "Package not found in registry.");
+  //   }
+  //   pkg.delete().then(function(result) {
+  //     callback(null, 200, "Package "+name+" successfully removed...");
+  //   });
+  // });
+};
+
+
+function packageNameExists(name) {
   Package.get(name).run().then(function(pkg) {
-    if(!pkg){
-      // return 400
-      console.log("Package not found in registry.");
-      callback(null, 400, "Package not found in registry.");
-    }
-    pkg.delete().then(function(result) {
-      callback(null, 200, "Package "+name+" successfully removed...");
-    });
+      return true;
+  }).catch(Errors.DocumentNotFound, function(err) {
+      return false;
   });
 };
 
 
 
 module.exports = {
+  packageNameExists: packageNameExists,
   createPackage: createPackage,
   removePackage: removePackage
 };

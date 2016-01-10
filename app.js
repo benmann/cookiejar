@@ -6,12 +6,17 @@ var express = require('express'),
     q = require("q");
 
 var config = require('./config/config.js'),
+    BowerData = require('./data/15-12-19-BowerPackages.json'),
+    registry = require('./workers/registry-worker.js'),
     cors = require('./config/cors.js'),
+    init = require('./router/init'),
     router = require('./router'),
     app = express();
 
 app.use(cors);
 app.use(express.static(__dirname + '/'));
+
+app.use('/init', init);
 app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
   return new router();
 }));

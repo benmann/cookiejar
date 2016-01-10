@@ -20,28 +20,11 @@ exports.getRegistryInfo = function(callback) {
 * GET populate registry with dummy data
 * =========================================== */
 exports.init = function(packages, callback) {
-  // reset index
-  elastic.deleteIndex();
-  // elastic.initIndex().then(elastic.initMapping)
 
-  // basically skipLogstash() ...
-  // elastic.deleteIndex().then(
-    // cerate index and mapping
-    // elastic.initIndex().then(elastic.initMapping).then(
-    //   packages.forEach(function(package, index) {
-    //     elastic.addDocument({
-    //         name: package.name,
-    //         owner: "test",
-    //         description: "test",
-    //         keywords: "test",
-    //         url: package.url,
-    //         hits: package.hits,
-    //         stars: "test",
-    //       })
-    //     callback(null, "package "+package.name+" saved...");
-    //   })
-    // )
-  // );
+  console.log("Filling DB with packages...");
+
+  elastic.deleteIndex();
+  elastic.initIndex().then(elastic.initMapping);
 
   //rethink
   packages.forEach(function(package, index) {

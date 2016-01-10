@@ -58,14 +58,12 @@ var router = Router.createClass([
     route: "createPackage[{keys:name}][{keys:url}]",
     get: function(req) {
 
-      console.log("routing");
       var packName = req.name[0]
           packURL = req.url[0];
 
-      console.log(packName +" / "+packURL);
-      
-      rethink.createPackage(packName, packURL).then(function(returnMsg){
-        return {path:["createPackage", packName, packURL], value: returnMsg};
+      return rethink.createPackage(packName, packURL).then(function(res){
+          // res is either complete JSONG or $error
+          return {path:["createPackage", packName, packURL], value: res};        
       });
 
     }

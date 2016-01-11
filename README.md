@@ -17,7 +17,7 @@ elasticsearch 2.1.0
 - run elasticsearch
 - run logstash (with included config)
 - run /init to populate the DB
-- use [cookiemonster](https://github.com/BenMann/cookiemonster) to query the database
+- ~~use [cookiemonster](https://github.com/BenMann/cookiemonster) to query the database~~ needs an update!
 - enjoy cookies 🍪
 
 ### Populating

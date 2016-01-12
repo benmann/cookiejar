@@ -9,11 +9,11 @@ var thinky = require('thinky')(),
 
 
 /* =============================================
-* POST create new package
+* create new package
 *
-* 200 - all good, pkg created
-* 400 - invalid name / url / connection error
-* 403 - already registered
+* @param {string} packName
+* @returns {object} model
+* @returns {object} error (if invalid URL, name or duplicate)
 *
 * =========================================== */
 function createPackage(packName, packURL) {
@@ -23,7 +23,7 @@ function createPackage(packName, packURL) {
       validName = isValidName(name);
 
   if (validName.error) {
-    return "Package name contains illegal characters. Package not created!";
+    return {$type: "error", value: "The provided name contains illegal characters."};
   }
 
   isValidURL(url, function(isValid) {
@@ -32,17 +32,22 @@ function createPackage(packName, packURL) {
         name: name,
         url: url
       });
-
-      //TODO: check if duplicate or handle in error
-      newPackage.save().then(function(doc) {
-        console.log(doc);
-        var packagesByName = {packName:{"url": packURL}};
-        return packagesByName;
+      
+      packageNameExists(packName, function(isDuplicate){
+        if(!isDuplicate){
+          newPackage.save().then(function(doc) {
+            var packagesByName = {packName:{"url": packURL}};
+            return packagesByName;
+          });
+        } else {
+          var err = {$type: "error", value: "A package with the provided name already exists."}
+          return err;
+        }
       });
-
+      
     } else {      
-        var errorMsg = { $type: "error", value: "Could not create package!"};
-        return errorMsg;
+      var err = {$type: "error", value: "The provided URL is not a valid URL."};
+      return err;
     }
   });
 };
@@ -50,40 +55,33 @@ function createPackage(packName, packURL) {
 
 
 /* =============================================
-* DELETE remove existing package
+* remove existing package by name
 *
-* 200 - all good, pkg deleted
-* 400 - package not found / connection error
-*
+* @param {string} packName
+* @returns {object} model
+* @returns {object} error (error, pkg doesn't exist)
 * =========================================== */
-function removePackage(req) {
-  // var name = req.body.name;
-
-  // Package.get(name).run().then(function(pkg) {
-  //   if(!pkg){
-  //     // return 400
-  //     console.log("Package not found in registry.");
-  //     callback(null, 400, "Package not found in registry.");
-  //   }
-  //   pkg.delete().then(function(result) {
-  //     callback(null, 200, "Package "+name+" successfully removed...");
-  //   });
-  // });
+function removePackage(packName) {
+  Package.get(packname).then(function(pkg) {
+    pkg.delete().then(function(result) {
+      // var packagesByName = {packName:{"url": packURL}};
+      // return packagesByName;
+    });    
+  });
 };
 
 
-function packageNameExists(name) {
+function packageNameExists(name, callback) {
   Package.get(name).run().then(function(pkg) {
-      return true;
+    callback(true);
   }).catch(Errors.DocumentNotFound, function(err) {
-      return false;
+    callback(false);
   });
 };
 
 
 
 module.exports = {
-  packageNameExists: packageNameExists,
   createPackage: createPackage,
   removePackage: removePackage
 };

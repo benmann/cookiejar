@@ -61,9 +61,11 @@ var router = Router.createClass([
       var packName = req.name[0]
           packURL = req.url[0];
 
-      return rethink.createPackage(packName, packURL).then(function(res){
-          // res is either complete JSONG or $error
-          return {path:["createPackage", packName, packURL], value: res};        
+      // res is either complete JSONG or $error
+      return rethink.createPackage(packName, packURL).then(function(res){ 
+        console.log("res");
+        console.log(res);
+        return {path:["createPackage", packName, packURL], value: res};
       });
 
     }

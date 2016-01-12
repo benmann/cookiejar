@@ -4,6 +4,9 @@
     <script>
       var model = new falcor.Model({source: new falcor.HttpDataSource('/model.json') });
 
+      var jlog = function(x) { console.log(JSON.stringify(x, null, 3)); };
+      var jerror = function(x) { console.error(JSON.stringify(x, null, 3)); };
+
       
       // > Search packages by name
       // > returns multiple packages!
@@ -34,7 +37,9 @@
   
   
       // Create new package, providing name and url
-      model.get(["createPackage", "bower", "git://github.com/BenMann/testrepo"]).then(function(response){
+      // model.get(["createPackage", "test", "git://github.com/BenMann/testrepo"]).then(jlog, jerror);
+      
+      model.get(["createPackage", "bower", "git://github.com/BenMann/testrepo"]).then(function(response){        
         document.write(response.json.createPackage.bower["git://github.com/BenMann/testrepo"]);
       });
 

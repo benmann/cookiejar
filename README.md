@@ -62,8 +62,13 @@ model.get(["packageById", "4J_wSnMIbr8x", "url"]).then(function(response) {
 });
 ```
 
+:o: `createPackage`
+```
+model.get(["createPackage", "test123", "git://github.com/BenMann/testrepo"]).then(function(response){        
+  document.write(response.json.createPackage.test123["git://github.com/BenMann/testrepo"]);
+});
+```
 
-:soon: `createPackage()` Creates package after checking validity (URL/name)   
 :soon: `removePackage()`  Removes a package from the registry based on ID or name
    
 --

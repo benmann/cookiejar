@@ -49,7 +49,6 @@ function getPackagesByName(packName) {
           pkgVals = package._source.new_val;
       model.packagesByName[pkgName] = pkgVals;
     });
-
     return model;
   });
 };

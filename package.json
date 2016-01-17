@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "body-parser": "^1.14.1",
+    "child-process-promise": "^1.1.0",
     "elasticsearch": "^10.0.1",
     "express": "^4.13.3",
     "falcor": "^0.1.15",

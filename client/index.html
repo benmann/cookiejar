@@ -37,11 +37,11 @@
   
   
       // Create new package, providing name and url
-      // model.get(["createPackage", "test", "git://github.com/BenMann/testrepo"]).then(jlog, jerror);
+      model.get(["createPackage", "test123", "git://github.com/BenMann/testrepo"]).then(jlog, jerror);
       
-      model.get(["createPackage", "bower", "git://github.com/BenMann/testrepo"]).then(function(response){        
-        document.write(response.json.createPackage.bower["git://github.com/BenMann/testrepo"]);
-      });
+      // model.get(["createPackage", "test123", "git://github.com/BenMann/testrepo"]).then(function(response){        
+      //   document.write(response.json.createPackage.test123["git://github.com/BenMann/testrepo"]);
+      // });
 
     </script>
   </head>

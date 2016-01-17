@@ -1,8 +1,6 @@
 var config = require('../config/config'),
     Package = require('../models/package.js'),
-    elastic = require('../config/elasticClient'),
-    isValidURL = require('../helper/validURL'),
-    isValidName = require('../helper/validName');
+    elastic = require('../config/elasticClient');
 
 
 

@@ -1,11 +1,8 @@
 var Falcor = require("falcor-express"),
     Router = require("falcor-router"),
-    config = require("../config/config"),
     Package = require("../models/package.js"),
     elastic = require("../api/elasticsearch"),
-    rethink = require("../api/rethinkDB.js"),
-    isValidURL = require("../helper/validURL"),
-    isValidName = require("../helper/validName");
+    rethink = require("../api/rethinkDB.js");
 
 var Model  = require("falcor").Model,
     $ref   = Model.ref,
@@ -14,14 +11,20 @@ var Model  = require("falcor").Model,
 
 var router = Router.createClass([
   { 
-    // Get basic info about the registry
+    /*
+    * Get basic info about the registry
+    * @return {JSON} version and name of registry
+    */
     route: "registryInfo",
     get: function(req) {
       return { path: ["registryInfo"], value:  $atom(elastic.getRegistryInfo())};
     }
   },
   {
-    // Get total amount of packages in registry
+    /*
+    * Get total amount of packages in registry
+    * @return {int} number of packages in DB
+    */
     route: "packages.length",
     get: function(req) {
       return Package.count().execute().then(function(total) {
@@ -30,10 +33,14 @@ var router = Router.createClass([
     }
   },
   {
-    // Get multiple packages by (similar) name, keyowrd, description or owner
+    /*
+    * Get multiple packages by (similar) name, keyowrd, description or owner
+    * @param {string} name
+    * @return {JSONG} packagesByName graph
+    */
     route: "packagesByName[{keys:name}]",
     get: function(req) {
-      // TOOD: this route can later be extended to also return results for search by keywords only etc.
+      // TODO: this route can later be extended to also return results for search by keywords only etc.
       // by reading the property given by the client and forward it as the field(s) ES actually queries.
       // We can even differentiate between returning one or multiple packages and whether we return only
       // the matching package or loosely matching ones by providing more parameters to this route.
@@ -44,7 +51,10 @@ var router = Router.createClass([
     }
   },  
   {
-    // Get package by ID
+    /*
+    * @param {string} id
+    * @return {JSONG} packagesById graph
+    */
     route: "packageById[{keys:id}]",
     get: function(req) {
       var packID = req.id[0];
@@ -54,7 +64,11 @@ var router = Router.createClass([
     }
   },
   {
-    // Create package
+    /*
+    * @param {string} name
+    * @param {string} url
+    * @return {JSONG} with either $atom: updated graph or $error if invalid
+    */
     route: "createPackage[{keys:name}][{keys:url}]",
     get: function(req) {
       var packName = req.name[0],

@@ -1,13 +1,9 @@
 var config = require('../config/config'),
     Package = require('../models/package.js'),    
     normalizeURL = require('../helper/normalizeURL'),
-    validate = require('../helper/validURL'),
-    isValidName = require('../helper/validName'),
+    validate = require('../helper/validations'),
     q = require("q"),
     deferred = q.defer();
-
-var thinky = require('thinky')(),
-    Errors = thinky.Errors;
 
 
 /* =============================================
@@ -21,10 +17,11 @@ var thinky = require('thinky')(),
 function createPackage(packName, packURL) {
   var name = packName,
       url = normalizeURL(packURL),
-      validName = isValidName(name);
+      validName = validate.validateName(name);
 
   if (validName.error) {    
     return q.fcall(function () {
+      // TODO: output the concrete error given by validate.validateName() here
       return {$type: "error", value: "The provided name contains illegal characters."};
     });
   }
@@ -37,7 +34,7 @@ function createPackage(packName, packURL) {
         url: url
       });
 
-      return packageNameExists(packName).then(function(isDuplicate){
+      return validate.packageNameExists(packName).then(function(isDuplicate){
         if(!isDuplicate){
           return newPackage.save().then(function(doc) {
             return q.fcall(function () {
@@ -83,17 +80,7 @@ function removePackage(packName) {
 };
 
 
-function packageNameExists(name) {
-  return Package.get(name).run().then(function(pkg) {
-    return q.fcall(function () {
-      return true
-    });
-  }).catch(Errors.DocumentNotFound, function(err) {
-    return q.fcall(function () {
-      return false;
-    });
-  });
-};
+
 
 
 

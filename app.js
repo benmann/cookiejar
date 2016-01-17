@@ -11,12 +11,14 @@ var config = require('./config/config.js'),
     cors = require('./config/cors.js'),
     init = require('./router/init'),
     router = require('./router'),
+    npmWorker = require('./workers/npm-worker.js'),
     app = express();
 
 app.use(cors);
 app.use(express.static(__dirname + '/'));
 
 app.use('/init', init);
+app.use('/npm', npmWorker.fetchFromNpm);
 app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
   return new router();
 }));

@@ -11,7 +11,7 @@ All prerequisites should be installed now.
 Let's start all the services:
    
 (if you installed via `brew`)   
-1) `$ rethindb`   
+1) `$ rethinkdb`   
 2) `$ elasticsearch`   
 3) run logstash with included config. This is located under `_logstash` in this repo. Make sure the path ot the template is correct. This depends on where your config file is located!
 ```

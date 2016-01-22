@@ -7,23 +7,7 @@
       var jlog = function(x) { console.log(JSON.stringify(x, null, 3)); };
       var jerror = function(x) { console.error(JSON.stringify(x, null, 3)); };
 
-      
-      // > Search packages by name
-      // > returns multiple packages!
-      // model.get("packagesByName.bower").then(function(response) {
-      //   var res = response.json.packagesByName.bower;
-      //   for (pack in res) {
-      //     document.write(res[pack].name+" - "+res[pack].url+"<br>");
-      //   }
-      // });
-
-      
-      // > Get package by ID
-      // model.get(["packageById", "4J_wSnMIbr8x", "url"]).then(function(response) {
-      //   document.write(response.json.packageById["4J_wSnMIbr8x"].url);
-      // });
-
-  
+    
       // > Get general info about the registry (name, version)
       //  model.get("registryInfo").then(function(response) {
       //   document.write(response.json.registryInfo.name);
@@ -37,11 +21,22 @@
   
   
       // Create new package, providing name and url
-      model.get(["createPackage", "test123", "git://github.com/BenMann/testrepo"]).then(jlog, jerror);
-      
-      // model.get(["createPackage", "test123", "git://github.com/BenMann/testrepo"]).then(function(response){        
-      //   document.write(response.json.createPackage.test123["git://github.com/BenMann/testrepo"]);
+
+      // model.get("packages.byName.testing123").then(jlog, jerror);
+      // model.call(["packages", "create", "testing123", "git://github.com/BenMann/testrepo"]).then(jlog, jerror);
+      // model.call(["packages", "remove", "testing123"]).then(jlog, jerror);
+
+
+      // model.call(["packages", "byName", "create", "yoooho", "git://github.com/BenMann/testrepo.git"]).then(jlog, jerror);
+      // model.call(["packages", "byName", "remove", "yoooho"]).then(jlog, jerror);
+      //  console.log("remove: ")
+        
+          // console.log("GET: ");
+          model.get(["packages", "byName", "yoooho"]).then(jlog, jerror);
+        // });
       // });
+
+      
 
     </script>
   </head>

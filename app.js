@@ -17,12 +17,13 @@ var config = require('./config/config.js'),
 app.use(cors);
 app.use(express.static(__dirname + '/'));
 
-app.use('/init', init);
-app.use('/npm', npmWorker.fetchFromNpm);
+app.use(bodyParser.urlencoded({extended: true}));
 app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
   return new router();
 }));
 
+app.use('/init', init);
+app.use('/npm', npmWorker.fetchFromNpm);
 
 app.listen(config.port);
 console.log(

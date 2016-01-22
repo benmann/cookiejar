@@ -5,6 +5,8 @@ var config = require('../config/config'),
     q = require("q"),
     deferred = q.defer();
 
+var thinky = require('thinky')(),
+    Errors = thinky.Errors;
 
 /* =============================================
 * create new package
@@ -38,11 +40,11 @@ function createPackage(packName, packURL) {
         if(!isDuplicate){
           return newPackage.save().then(function(doc) {
             return q.fcall(function () {
-              var model = {packagesByName:{}},
+              var model = {byName:{}},
                   innermodel = {};
 
               innermodel.url = packURL;
-              model.packagesByName[packName] = innermodel;
+              model.byName[packName] = innermodel;
               return model;              
             });
           });
@@ -71,11 +73,24 @@ function createPackage(packName, packURL) {
 * @returns {object} error (error, pkg doesn't exist)
 * =========================================== */
 function removePackage(packName) {
-  Package.get(packname).then(function(pkg) {
-    pkg.delete().then(function(result) {
-      // var packagesByName = {packName:{"url": packURL}};
-      // return packagesByName;
-    });    
+  return Package.get(packName).then(function(pkg) {
+    return pkg.delete().then(function(result) {
+  //     var res = {byName:{}};
+  //     res.byName[packName] = {
+  //       created_at: result["created_at"],
+  //       id: result["id"],
+  //       isPublic: result["isPublic"],
+  //       name: result["name"],
+  //       type: result["type"],
+  //       url: result["url"]
+  //     };
+  //     return res;
+      return "deleted";
+    });
+  }).catch(Errors.DocumentNotFound, function(err) {
+    return q.fcall(function () {
+      return {$type: "error", value: "A package with the specified name does not exist."};
+    });
   });
 };
 

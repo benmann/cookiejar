@@ -41,13 +41,17 @@ function getPackagesByName(packName) {
     }
   }).then(function(searchresult) {
 
-    var model = {packagesByName:{}};
+    var model = {byName:{}};
     searchresult.hits.hits.forEach(function(package, index) {
       var pkgName = package._source.new_val.name,
           pkgVals = package._source.new_val;
-      model.packagesByName[pkgName] = pkgVals;
+      model.byName[pkgName] = pkgVals;
     });
+    
+    console.log("this should not show deleted (in rethink) results: ");
+    console.log(model);
     return model;
+
   });
 };
 

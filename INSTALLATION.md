@@ -14,6 +14,7 @@ Let's start all the services:
 1) `$ rethinkdb`   
 2) `$ elasticsearch`   
 3) run logstash with included config. This is located under `_logstash` in this repo. Make sure the path ot the template is correct. This depends on where your config file is located!
+##### DO NOT CREATE THE TABLE `Package` MANUALLY! Thinky will ensure the primary key is on `name`.
 ```
 ~/logstash/bin/logstash -e '
 input {rethinkdb

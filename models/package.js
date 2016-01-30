@@ -2,7 +2,8 @@ var config = require('../config/config.js'),
     thinky = require('../config/thinky.js'),
     r = thinky.r,
     type = thinky.type,
-    shortid = require('shortid');
+    shortid = require('shortid'),
+    Errors = thinky.Errors;
 
 
 var Package = thinky.createModel("Package", {

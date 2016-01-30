@@ -23,7 +23,7 @@ function getRegistryInfo(){
 * @param {string} packName
 * @returns {object} model (contains multiple packages)
 * =========================================== */
-function getPackagesByName(packName) {
+function getPackages(packName) {
   return elastic.search({
     index: "packages",
     type: "package",
@@ -33,23 +33,21 @@ function getPackagesByName(packName) {
         "multi_match" : {
           "query": packName,
           "type": "best_fields",
-          "fields": ["new_val.name", "new_val.description", "new_val.keywords", "new_val.owner"],
+          "fields": ["name", "description", "keywords", "owner"],
           "minimum_should_match": "25%",
           "fuzziness" : 2,
         }
       }
     }
-  }).then(function(searchresult) {
-
-    var model = {byName:{}};
+  }).then(function(searchresult) {    
+    var model = {};
+    
     searchresult.hits.hits.forEach(function(package, index) {
-      var pkgName = package._source.new_val.name,
-          pkgVals = package._source.new_val;
-      model.byName[pkgName] = pkgVals;
+      var pkgName = package._source.name,
+          pkgVals = package._source;
+      model.pkgName = pkgVals;
     });
     
-    console.log("this should not show deleted (in rethink) results: ");
-    console.log(model);
     return model;
 
   });
@@ -72,16 +70,15 @@ function getPackageById(packID) {
         "bool": {
           "must":
           {
-            "match": {"new_val.id": packID}
+            "match": {"id": packID}
           }
         }
       }
     }
   }).then(function(searchresult) {
-
     var model = {packageById:{}};
-    var matchingID = searchresult.hits.hits[0]._source.new_val.id,
-        pkgVals = searchresult.hits.hits[0]._source.new_val;
+    var matchingID = searchresult.hits.hits[0]._source.id,
+        pkgVals = searchresult.hits.hits[0]._source;
       
     model.packageById[matchingID] = pkgVals;   
     return model;
@@ -89,8 +86,9 @@ function getPackageById(packID) {
 };
 
 
+
 module.exports = {
   getRegistryInfo: getRegistryInfo,  
-  getPackagesByName: getPackagesByName,
-  getPackageById: getPackageById
+  getPackages: getPackages,
+  getPackageById: getPackageById,
 };

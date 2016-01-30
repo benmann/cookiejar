@@ -80,7 +80,7 @@ function validateName(name) {
 function packageNameExists(name) {
   return Package.get(name).run().then(function(pkg) {
     return q.fcall(function () {
-      return true
+      return true;
     });
   }).catch(Errors.DocumentNotFound, function(err) {
     return q.fcall(function () {

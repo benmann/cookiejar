@@ -2,11 +2,12 @@ var config = require('../config/config'),
     Package = require('../models/package.js'),    
     normalizeURL = require('../helper/normalizeURL'),
     validate = require('../helper/validations'),
+    elastic = require('../workers/elastic-worker.js'),
     q = require("q"),
-    deferred = q.defer();
+    r = require('rethinkdb'),
+    deferred = q.defer(),
+    shortid = require('shortid');
 
-var thinky = require('thinky')(),
-    Errors = thinky.Errors;
 
 /* =============================================
 * create new package
@@ -16,7 +17,7 @@ var thinky = require('thinky')(),
 * @returns {object} error (if invalid URL, name or duplicate)
 *
 * =========================================== */
-function createPackage(packName, packURL) {
+function createPackage(packName, packURL){
   var name = packName,
       url = normalizeURL(packURL),
       validName = validate.validateName(name);
@@ -31,20 +32,28 @@ function createPackage(packName, packURL) {
   return validate.validateUrl(url).then(function(exitCode){
 
     if (exitCode == 0) {
+      var newID = shortid.generate();
       var newPackage = new Package({
         name: name,
-        url: url
+        url: url,
+        id: newID
       });
 
       return validate.packageNameExists(packName).then(function(isDuplicate){
         if(!isDuplicate){
-          return newPackage.save().then(function(doc) {
+          return newPackage.save().then(function(doc){
+              // also save in ES
+              elastic.addDocument({
+                name: name,
+                url: url,
+                id: newID
+              });
             return q.fcall(function () {
-              var model = {byName:{}},
+              var model = {},
                   innermodel = {};
 
               innermodel.url = packURL;
-              model.byName[packName] = innermodel;
+              model.packName = innermodel;
               return model;              
             });
           });
@@ -64,7 +73,6 @@ function createPackage(packName, packURL) {
 };
 
 
-
 /* =============================================
 * remove existing package by name
 *
@@ -72,29 +80,17 @@ function createPackage(packName, packURL) {
 * @returns {object} model
 * @returns {object} error (error, pkg doesn't exist)
 * =========================================== */
-function removePackage(packName) {
-  return Package.get(packName).then(function(pkg) {
-    return pkg.delete().then(function(result) {
-  //     var res = {byName:{}};
-  //     res.byName[packName] = {
-  //       created_at: result["created_at"],
-  //       id: result["id"],
-  //       isPublic: result["isPublic"],
-  //       name: result["name"],
-  //       type: result["type"],
-  //       url: result["url"]
-  //     };
-  //     return res;
-      return "deleted";
-    });
-  }).catch(Errors.DocumentNotFound, function(err) {
-    return q.fcall(function () {
-      return {$type: "error", value: "A package with the specified name does not exist."};
+function removePackage(packName){
+  return Package.get(packName).delete().run().then(function(res){
+    elastic.removeDocument(packName);
+    return "deleted";
+  }).catch(Errors.DocumentNotFound, function(err){
+    console.log(err);
+    return q.fcall(function(){
+      return false;
     });
   });
 };
-
-
 
 
 

@@ -33,7 +33,6 @@ exports.initMapping = function() {
 }
 
 
-
 /* =============================================
 * elasticsearch: delete index (packages)
 * =========================================== */
@@ -73,7 +72,7 @@ exports.addDocument = function(document) {
       index: indexName,
       type: "package",
       body: {
-        id: shortid.generate,
+        id: document.id || shortid.generate,
         name: document.name,
         type: document.type,
         owner: document.owner,
@@ -86,5 +85,39 @@ exports.addDocument = function(document) {
         isPublic: document.isPublic || config.isPublic
       }
   });
+  console.log("created");
 }
 
+
+/* =============================================
+* elasticsearch: remove document by package name
+* this always needs to occur when the primary DB
+* makes a deletion
+* =========================================== */
+exports.removeDocument = function(packName) {
+
+  return elasticClient.search({
+    index: "packages",
+    type: "package",
+    size: 1,
+    body: {
+      query: {
+        "term" : {
+          "name" : packName
+        }
+      }
+    }
+  }).then(function(searchresult) {
+      return elasticClient.delete({
+        index: indexName,
+        type: "package",
+        id: searchresult.hits.hits[0]._id
+      }, function(err, res){
+        if(err){
+          console.log(err);
+        }
+        return {};
+    });
+});
+  
+}

@@ -1,7 +1,10 @@
 var config = require('../config/config.js'),
     elasticsearch = require('elasticsearch'),
+    r = require('rethinkdb'),
     Package = require('../models/package.js'),
     elastic = require('../workers/elastic-worker.js');
+
+
 
 /* =============================================
 * GET general registry info
@@ -16,13 +19,14 @@ exports.getRegistryInfo = function(callback) {
 };
 
 
+
 /* =============================================
 * GET populate registry with dummy data
 * =========================================== */
 exports.init = function(packages, callback) {
 
-  console.log("Filling DB with packages...");
 
+  console.log("Filling DB with packages...");
   elastic.deleteIndex();
   elastic.initIndex().then(elastic.initMapping);
 

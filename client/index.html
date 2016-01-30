@@ -20,23 +20,10 @@
       // });
   
   
-      // Create new package, providing name and url
-
-      // model.get("packages.byName.testing123").then(jlog, jerror);
-      // model.call(["packages", "create", "testing123", "git://github.com/BenMann/testrepo"]).then(jlog, jerror);
-      // model.call(["packages", "remove", "testing123"]).then(jlog, jerror);
-
-
-      // model.call(["packages", "byName", "create", "yoooho", "git://github.com/BenMann/testrepo.git"]).then(jlog, jerror);
-      // model.call(["packages", "byName", "remove", "yoooho"]).then(jlog, jerror);
-      //  console.log("remove: ")
-        
-          // console.log("GET: ");
-          model.get(["packages", "byName", "yoooho"]).then(jlog, jerror);
-        // });
-      // });
-
-      
+      // Create, remove, get package by name
+      // model.call(["packages", "create", "fancypackagename", "git://github.com/BenMann/testrepo.git"]).then(jlog, jerror);
+      // model.call(["packages", "remove", "fancypackagename"]).then(jlog, jerror);
+      // model.get(["packages", "fancypackagename"]).then(jlog, jerror);
 
     </script>
   </head>

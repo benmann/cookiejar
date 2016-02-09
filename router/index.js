@@ -38,14 +38,17 @@ var router = Router.createClass([
     * @param {string} name
     * @return {JSONG} graph
     */
-    route: "packages.[{keys:name}]",
+    route: "packages[{keys:name}]",
     get: function(req) {      
       // TODO: this route can later be extended to also return results for search by keywords only etc.
       // by reading the property given by the client and forward it as the field(s) ES actually queries.
       // We can even differentiate between returning one or multiple packages and whether we return only
       // the matching package or loosely matching ones by providing more parameters to this route.
       var packName = req.name[0];
+      console.log("getting...");
       return elastic.getPackages(packName).then(function(model){
+        console.log("returning:");
+        console.log(model);
         return {path:["packages", packName], value: $atom(model)};      
       });
     }

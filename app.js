@@ -6,11 +6,8 @@ var express = require('express'),
     q = require("q");
 
 var config = require('./config/config.js'),
-    BowerData = require('./data/15-12-19-BowerPackages.json'),
-    registry = require('./workers/registry-worker.js'),
     cors = require('./config/cors.js'),
     init = require('./router/init'),
-    router = require('./router'),
     npmWorker = require('./workers/npm-worker.js'),
     app = express();
 

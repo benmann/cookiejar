@@ -85,7 +85,6 @@ exports.addDocument = function(document) {
         isPublic: document.isPublic || config.isPublic
       }
   });
-  console.log("created");
 }
 
 
@@ -119,5 +118,5 @@ exports.removeDocument = function(packName) {
         return {};
     });
 });
-  
+
 }

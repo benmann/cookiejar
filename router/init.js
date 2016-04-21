@@ -3,7 +3,7 @@ var express = require('express'),
     registry = require('../workers/registry-worker'),
     elastic = require('../api/elasticsearch'),
     config = require('../config/config'),
-    BowerData = require('../data/15-12-19-BowerPackages.json');
+    BowerData = require('../data/16-04-21-BowerPackages.json');
 
 
 /* =============================================

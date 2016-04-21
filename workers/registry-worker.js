@@ -2,8 +2,8 @@ var config = require('../config/config.js'),
     elasticsearch = require('elasticsearch'),
     r = require('rethinkdb'),
     Package = require('../models/package.js'),
+    shortid = require('shortid'),
     elastic = require('../workers/elastic-worker.js');
-
 
 
 /* =============================================
@@ -41,6 +41,13 @@ exports.init = function(packages, callback) {
     newPackage.save().then(function(doc) {
       callback(null, "package "+newPackage.name+" saved...");
     });
+
+    elastic.addDocument({
+      name: package.name,
+      url: package.url,
+      id: shortid.generate()
+    });
+
   });
 
 };

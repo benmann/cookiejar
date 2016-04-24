@@ -6,11 +6,11 @@ config.name = 'The unofficial Bower registry';
 config.description = 'This is the unofficial Bower registry, home of 45k+ packages.';
 
 // defaults
-config.port = 3000;
+config.port = 3333;
 config.defaultSize = 30;
 
 config.thinkHost = 'localhost';
-config.thinkPort = 29015;
+config.thinkPort = 28015;
 config.thinkAuthKey = '';
 config.thinkDB = 'cookiejar';
 

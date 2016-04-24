@@ -38,14 +38,14 @@ exports.init = function(packages, callback) {
       hits: package.hits
     });
 
-    newPackage.save().then(function(doc) {
-      callback(null, "package "+newPackage.name+" saved...");
-    });
-
     elastic.addDocument({
       name: package.name,
       url: package.url,
       id: shortid.generate()
+    });
+
+    newPackage.save().then(function(doc) {
+      callback(null, "package "+newPackage.name+" saved...");
     });
 
   });

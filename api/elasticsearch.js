@@ -39,15 +39,15 @@ function getPackages(packName) {
         }
       }
     }
-  }).then(function(searchresult) {    
+  }).then(function(searchresult) {
     var model = {};
-    
     searchresult.hits.hits.forEach(function(package, index) {
+// console.log(package._source.name);
       var pkgName = package._source.name,
           pkgVals = package._source;
-      model.pkgName = pkgVals;
+      model[pkgName] = pkgVals;
     });
-    
+    console.log(model);
     return model;
 
   });
@@ -79,8 +79,8 @@ function getPackageById(packID) {
     var model = {packageById:{}};
     var matchingID = searchresult.hits.hits[0]._source.id,
         pkgVals = searchresult.hits.hits[0]._source;
-      
-    model.packageById[matchingID] = pkgVals;   
+
+    model.packageById[matchingID] = pkgVals;
     return model;
   });
 };
@@ -88,7 +88,7 @@ function getPackageById(packID) {
 
 
 module.exports = {
-  getRegistryInfo: getRegistryInfo,  
+  getRegistryInfo: getRegistryInfo,
   getPackages: getPackages,
   getPackageById: getPackageById,
 };

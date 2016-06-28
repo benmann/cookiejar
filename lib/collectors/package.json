@@ -1,0 +1,16 @@
+{
+  "name": "cookiejar-collectors",
+  "version": "1.0.0",
+  "description": "",
+  "main": "collect.js",
+  "scripts": {
+    "start": "node collect.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "amqp": "^0.2.6",
+    "got": "^6.3.0",
+    "jsonfile": "^2.3.1"
+  }
+}

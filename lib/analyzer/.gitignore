@@ -1,0 +1,7 @@
+node_modules/
+rethinkdb_data/
+lib/config/local.*
+lib/data
+lib/tmp
+/test/
+dump.rdb

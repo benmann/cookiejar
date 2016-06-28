@@ -1,0 +1,41 @@
+version: '2'
+services:
+
+  collect:
+    build: ./lib/collectors
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
+
+  analyze:
+    build: ./lib/analyzer
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
+
+  analyze_b:
+    build: ./lib/analyzer
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
+
+  analyze_c:
+    build: ./lib/analyzer
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
+
+  rethinkdb:
+    image: rethinkdb
+    expose:
+      - "29015"
+  elasticsearch:
+    image: elasticsearch
+    expose:
+      - "9300"
+  rabbitmq:
+    image: rabbitmq
